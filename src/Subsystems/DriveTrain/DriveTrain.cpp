@@ -7,9 +7,6 @@
  * inversion - Which side of the robot is inverted
  */
 DriveTrain::DriveTrain(int leftMotorPin, int rightMotorPin, DriveTrainInvertedSide inversion) {
-  leftMotor = new Motor(leftMotorPin);
-  rightMotor = new Motor(rightMotorPin);
-
   switch (inversion) {
     case INVERTED_LEFT:
       leftMotor = new Motor(leftMotorPin, true);
