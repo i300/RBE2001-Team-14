@@ -49,6 +49,8 @@ private:
   RadiationStatus radiationStatus;
   bool8 stopped;
 
+  unsigned long heartbeatTimer;
+
   const int TYPE_INDEX = 0x00;
   const int SOURCE_INDEX = 0x01;
   const int DESTINATION_INDEX = 0x02;

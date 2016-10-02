@@ -33,6 +33,12 @@ void AquireRodTask::update() {
 
       break;
     }
+
+    case DRIVE_TO_TARGET_LINE:
+      break;
+
+    case DRIVE_TO_SUPPLY:
+      break;
   }
 }
 

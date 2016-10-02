@@ -1,5 +1,6 @@
 #include "../../Utilities.h"
 #include "../../Subsystems/DriveTrain/DriveTrain.hpp"
+#include "../../FieldController/FieldController.hpp"
 #include "../RobotTask.hpp"
 
 #ifndef AQUIRE_ROD_TASK_H
@@ -19,6 +20,8 @@ private:
   AquireRodState state;
 
   DriveTrain *_driveTrain;
+  FieldController *_fieldController;
+
   int8 _currentLocation;
   int8 _rodLocation;
 

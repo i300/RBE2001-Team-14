@@ -9,6 +9,7 @@ FieldController::FieldController() {
   storageAvailability = 0;
   supplyAvailability = 0;
   radiationStatus = kNoRadiation;
+  heartbeatTimer = millis() + 1000;
   stopped = false;
 }
 
@@ -24,6 +25,10 @@ void FieldController::setup() {
  */
 void FieldController::update() {
   // Send heartbeat
+  if (millis() > heartbeatTimer) {
+    heartbeatTimer = millis() + 1000;
+    sendHeartbeat();
+  }
 
   // Read incoming messages
   while (field.read()) {

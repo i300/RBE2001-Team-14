@@ -1,15 +1,23 @@
 #include "Arduino.h"
+#include "Utilities.h"
 #include "RobotMap.h"
+
 #include "FieldController/FieldController.hpp"
+
 #include "Subsystems/DriveTrain/DriveTrain.hpp"
+#include "Subsystems/RodGrabber/RodGrabber.hpp"
+
 #include "RobotTask/RobotTask.hpp"
 
-DriveTrain *driveTrain;
+// Sensors and controllers
 FieldController *fieldController;
 
-RobotTask currentTask;
+// Subsystems
+DriveTrain *driveTrain;
+RodGrabber *rodGrabber;
 
-long heartbeatTimer = 0;
+// Task stuff
+RobotTask currentTask;
 
 void setup() {
   Serial.begin(115200);
@@ -20,10 +28,12 @@ void setup() {
   fieldController = new FieldController();
   fieldController->setup();
 
-  //driveTrain = new DriveTrain(PIN_MOTOR_LEFT, PIN_MOTOR_RIGHT, DriveTrainInvertedSide::INVERTED_LEFT);
-
-  heartbeatTimer = millis() + 1000;
+  driveTrain = new DriveTrain(PIN_MOTOR_LEFT, PIN_MOTOR_RIGHT, DriveTrainInvertedSide::INVERTED_LEFT);
+  rodGrabber = new RodGrabber(PIN_MOTOR_GRABBER, PIN_SERVO_GRABBER, PIN_SENSOR_POT);
 }
+
+long nextTime = millis() + 2500;
+bool8 grabbed = false;
 
 void loop() {
   // Update bluetooth controller
@@ -34,10 +44,29 @@ void loop() {
     return;
   }
 
-  /*if (millis() > heartbeatTimer) {
-    heartbeatTimer = millis() + 1000;
-    fieldController->sendHeartbeat();
-  }*/
+  // Update Subsystems
+  rodGrabber->update();
+
+  // TEST
+  if (millis() >= nextTime) {
+    //Serial.println(nextTime);
+
+    if (grabbed) {
+      rodGrabber->grab();
+      delay(500);
+      rodGrabber->moveUp();
+
+      grabbed = false;
+      nextTime = millis() + 5000;
+    } else {
+      rodGrabber->release();
+      delay(2000);
+      rodGrabber->moveDown();
+
+      grabbed = true;
+      nextTime = millis() + 5000;
+    }
+  }
 
   // Update current task
   currentTask.update();

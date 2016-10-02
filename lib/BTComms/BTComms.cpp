@@ -58,7 +58,7 @@ unsigned char BTComms::getMessageByte(unsigned index) {
 bool BTComms::read() {
 	uint8_t calculatedChecksum = 0xFF;
 	while (Serial3.available()) {
-		Serial.println("Message Start");
+		//Serial.println("Message Start");
     unsigned inByte = Serial3.read();
     switch (BTstate) {
       case kLookingForStart:
@@ -71,7 +71,7 @@ bool BTComms::read() {
         messageIndex = 0;
         BTstate = kReadMessage;
 
-				Serial.println("Message Length: " + String(inByte));
+				//Serial.println("Message Length: " + String(inByte));
 
 				calculatedChecksum -= inByte;
         break;
@@ -79,10 +79,10 @@ bool BTComms::read() {
         message[messageIndex++] = inByte;
         if (messageIndex >= messageLength) {
           BTstate = kLookingForStart;
-					Serial.print(calculatedChecksum, HEX);
-					Serial.print(" == ");
-					Serial.println(inByte, HEX);
-					Serial.println("Message End"); Serial.println("");
+					//Serial.print(calculatedChecksum, HEX);
+					//Serial.print(" == ");
+					//Serial.println(inByte, HEX);
+					//Serial.println("Message End"); Serial.println("");
 					if (calculatedChecksum == inByte) {
 						return true;
 					} else {

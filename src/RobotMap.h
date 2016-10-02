@@ -3,18 +3,20 @@
 #ifndef ROBOTMAP_H
 #define ROBOTMAP_H
 
-static const int8 PIN_MOTOR_LEFT = 5;
-static const int8 PIN_MOTOR_RIGHT = 4;
+static const int8 PIN_MOTOR_GRABBER = 4;
+static const int8 PIN_SERVO_GRABBER = 5;
+static const int8 PIN_MOTOR_LEFT = 6;
+static const int8 PIN_MOTOR_RIGHT = 7;
 
-static const int8 PIN_MOTOR_TEST = 4;
+static const int8 PIN_SENSOR_POT = A11;
+
+
 /*static const int8 PIN_MOTOR_BOWLGRABBER = 6;
 static const int8 PIN_MOTOR_FOAMLOADER = 8;
 static const int8 PIN_MOTOR_CUBEFLIPPER = 10;
 
 static const int8 PIN_SENSOR_RANGEFINDER = A4;
-static const int8 PIN_SENSOR_ARM_POT = A8;
 
-static const int8 PIN_SERVO_GRABBER = 7;
 
 static const int8 PIN_SENSOR_LINEFOLLOWER_LEFT = 24;
 static const int8 PIN_SENSOR_LINEFOLLOWER_MIDDLE = 25;
