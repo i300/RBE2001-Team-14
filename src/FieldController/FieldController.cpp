@@ -1,9 +1,15 @@
 #include "FieldController.hpp"
 
+BTComms field;
+
 /**
  * Initializer
  */
 FieldController::FieldController() {
+  storageAvailability = 0;
+  supplyAvailability = 0;
+  radiationStatus = kNoRadiation;
+  stopped = false;
 }
 
 /**
@@ -17,6 +23,9 @@ void FieldController::setup() {
  * Read all messages recieved and update the state of the field
  */
 void FieldController::update() {
+  // Send heartbeat
+
+  // Read incoming messages
   while (field.read()) {
     Message message;
     message.type = field.getMessageByte(TYPE_INDEX);
@@ -26,31 +35,17 @@ void FieldController::update() {
     // Ignore messages with reserved types
     if (message.type > kReserved && message.type < 0x08) break;
 
-    unsigned int dataLength = field.getMessageLength() - 4;
-    message.checksum = field.getMessageByte(0x05 + dataLength);
-
-    // Checksum is all the bytes from the length to (but not including) the checksum
-    unsigned int calculatedChecksum = field.getMessageLength() + message.type + message.source + message.destination;
-
-    // Add data bytes to checksum
-    for (unsigned int i=0; i < dataLength; i++) {
-      calculatedChecksum += field.getMessageByte(0x05 + i);
-    }
-
-    // Break if checksum is invalid
-    if (message.checksum == calculatedChecksum) break;
-
     switch (message.type) {
       case kStorageAvailability:
-        storageAvailability = field.getMessageByte(0x05);
+        storageAvailability = field.getMessageByte(DATA_OR_CHECKSUM_INDEX);
         break;
       case kSupplyAvailability:
-        supplyAvailability = field.getMessageByte(0x05);
+        supplyAvailability = field.getMessageByte(DATA_OR_CHECKSUM_INDEX);
         break;
       case kRadiationAlert:
-        if (field.getMessageByte(0x05) == 0x2C) {
+        if (field.getMessageByte(DATA_OR_CHECKSUM_INDEX) == 0x2C) {
           radiationStatus = kLowRadiation;
-        } else if (field.getMessageByte(0x05) == 0xFF) {
+        } else if (field.getMessageByte(DATA_OR_CHECKSUM_INDEX) == 0xFF) {
           radiationStatus = kHighRadiation;
         }
         break;
@@ -68,6 +63,35 @@ void FieldController::update() {
         break;
     }
   }
+}
+
+/**
+ * Send heartbeat message to field
+ */
+void FieldController::sendHeartbeat() {
+	field.writeMessage(kHeartbeat, 0x0a, 0x00);
+}
+
+/** DEBUG
+ * Prints stored information about the field to serial
+ */
+void FieldController::printStatus() {
+  Serial.print("Robot Stopped: "); Serial.println(stopped);
+  Serial.print("Radiation Level: "); Serial.println(radiationStatus);
+
+  Serial.print("Storage Availability: ");
+  Serial.print(getStorageAvailability(1)); Serial.print(" ");
+  Serial.print(getStorageAvailability(2)); Serial.print(" ");
+  Serial.print(getStorageAvailability(3)); Serial.print(" ");
+  Serial.println(getStorageAvailability(4));
+
+  Serial.print("Supply Availability: ");
+  Serial.print(getSupplyAvailability(1)); Serial.print(" ");
+  Serial.print(getSupplyAvailability(2)); Serial.print(" ");
+  Serial.print(getSupplyAvailability(3)); Serial.print(" ");
+  Serial.println(getSupplyAvailability(4));
+
+  Serial.println();Serial.println();
 }
 
 /**
@@ -103,6 +127,9 @@ bool8 FieldController::getAvailability(byte container, int8 tubeIndex) {
   return (container & (1 << (7 - tubeIndex)) >> (7 - tubeIndex));
 }
 
+/**
+ * @returns True if the Robot should be stopped, false otherwise
+ */
 bool8 FieldController::getStopped() {
   return stopped;
 }
