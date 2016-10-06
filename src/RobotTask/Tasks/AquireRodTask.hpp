@@ -1,5 +1,6 @@
 #include "../../Utilities.h"
 #include "../../Subsystems/DriveTrain/DriveTrain.hpp"
+#include "../../Subsystems/RodGrabber/RodGrabber.hpp"
 #include "../../FieldController/FieldController.hpp"
 #include "../RobotTask.hpp"
 
@@ -9,8 +10,8 @@
 enum AquireRodState {
   BACK_UP,
   TURN_ONTO_LINE,
-  DRIVE_TO_TARGET_LINE,
-  DRIVE_TO_SUPPLY
+  DRIVE_TO_SUPPLY,
+  FINISHED
 };
 
 class AquireRodTask : RobotTask {

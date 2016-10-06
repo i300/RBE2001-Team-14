@@ -16,29 +16,26 @@ void AquireRodTask::update() {
 
   switch (state) {
     case BACK_UP: {
-      _driveTrain->arcadeDrive(-1, 0);
-
-      unsigned long BACK_UP_TIME = 500; // ms
-      if (getTimeStarted() > getTimeStarted() + BACK_UP_TIME) {
-        state = TURN_ONTO_LINE;
-      }
 
       break;
     }
 
     case TURN_ONTO_LINE: {
-      _driveTrain->arcadeDrive(1, 1);
-
 
 
       break;
     }
 
-    case DRIVE_TO_TARGET_LINE:
+    case DRIVE_TO_SUPPLY: {
+
       break;
 
-    case DRIVE_TO_SUPPLY:
+    }
+
+    case FINISHED: {
+
       break;
+    }
   }
 }
 

@@ -52,3 +52,10 @@ void RobotTask::update() {
     _finished = true;
   }
 }
+
+/* getState - int currentState
+ * Returns the current state.
+ */
+int RobotTask::getState() {
+  return 0;
+}

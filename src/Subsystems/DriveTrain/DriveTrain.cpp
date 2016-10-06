@@ -6,7 +6,15 @@
  * rightMotorPin - PWM pin for right motor
  * inversion - Which side of the robot is inverted
  */
-DriveTrain::DriveTrain(int leftMotorPin, int rightMotorPin, DriveTrainInvertedSide inversion) {
+DriveTrain::DriveTrain(int leftMotorPin, int rightMotorPin, int alignmentSwitchPin,
+                       LiquidCrystal *lcd, QTRSensorsAnalog *lineSensor,
+                       DriveTrainInvertedSide inversion) {
+  _lineSensor = lineSensor;
+  _lcd = lcd;
+  _alignmentSwitchPin = alignmentSwitchPin;
+
+  pinMode(_alignmentSwitchPin, INPUT_PULLUP);
+
   switch (inversion) {
     case INVERTED_LEFT:
       leftMotor = new Motor(leftMotorPin, true);
@@ -39,6 +47,8 @@ void DriveTrain::writeToMotors(float left, float right) {
  * rotation - Value from -1 (left) to 1 (right)
  */
 void DriveTrain::arcadeDrive(float speed, float rotation) {
+  if (rotation == 0) tankDrive(speed, speed);
+
   // constrain speed and roation to intended values (-1 to 1)
   speed = constrain(speed, -1, 1);
   rotation = constrain(rotation, -1, 1);
@@ -81,6 +91,93 @@ void DriveTrain::tankDrive(float left, float right) {
 
   // write to motors
   writeToMotors(left, right);
+}
+
+/* followLine - Drive the robot by following a line using PID control
+ *
+ * speed - speed to drive forward
+ * @returns PID loop result
+ */
+double DriveTrain::followLine(float speed) {
+  unsigned long currentTime = millis();
+
+  unsigned int sensorValues[_lineSensor->getNumSensors()];
+  unsigned int linePosition = _lineSensor->readLine(sensorValues);
+
+  // Reset sum of error and last error if measurements are very out of date
+  if (currentTime > lastMeasurement + 1000) {
+    sumError = 0;
+    lastError = 0;
+  }
+
+  double error = ((int)linePosition - LINEFOLLOW_CENTER_POSITION) / (double)LINEFOLLOW_CENTER_POSITION;
+  double iPart = sumError;
+  double dPart = error - lastError;
+
+  sumError += error;
+  lastError = error;
+
+  float rotation = error * kP + iPart * kI + dPart * kD;
+
+  arcadeDrive(speed, rotation);
+
+  lastMeasurement = currentTime;
+
+  return rotation;
+}
+
+/*
+ *
+ */
+bool8 DriveTrain::turnOntoLine(float speed, int direction) {
+  direction = constrain(direction, -1, 1);
+
+  unsigned int sensorValues[_lineSensor->getNumSensors()];
+  _lineSensor->readCalibrated(sensorValues);
+  unsigned int middleSensorValue = sensorValues[4];
+
+  int error = 1000 - middleSensorValue;
+
+  Serial.println("Error: " + String(error));
+
+  if (abs(error) < TURN_ONTO_LINE_TOLERANCE) {
+    stop();
+    return true;
+  } else {
+    speed = speed * kP_turn * (error / 1000.0);
+
+    tankDrive(speed * direction, -speed * direction);
+    return false;
+  }
+}
+
+int DriveTrain::updateLineCount() {
+  unsigned char numSensors = _lineSensor->getNumSensors();
+  unsigned int sensorValues[numSensors];
+  _lineSensor->readCalibrated(sensorValues);
+
+  unsigned long currentTime = millis();
+
+  if (sensorValues[0] > 900 && sensorValues[numSensors-1] > 900) {
+    if (currentTime > timeLastLineSeen + MAX_TIME_BETWEEN_LINES) {
+      horizontalLinesSeen += 1;
+      timeLastLineSeen = currentTime;
+    }
+  }
+
+  return horizontalLinesSeen;
+}
+
+void DriveTrain::resetLineCount() {
+  horizontalLinesSeen = 0;
+}
+
+/*
+ *
+ */
+bool8 DriveTrain::isAlignmentSwitchPressed() {
+  Serial.println(digitalRead(_alignmentSwitchPin));
+  return !digitalRead(_alignmentSwitchPin);
 }
 
 /* stop - Sends zero to the drive motors

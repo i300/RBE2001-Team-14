@@ -9,7 +9,7 @@
  * for every type. See comment below for more information on data.
  */
 
-#ifndef ROBOTTYPE_H
+#ifndef ROBOTTASK_H
 #define ROBOTTASK_H
 
 enum RobotTaskType {
@@ -54,6 +54,8 @@ public:
   RobotTaskType getType();
   virtual bool8 isFinished();
   virtual void update();
+
+  virtual int getState();
 };
 
 #endif

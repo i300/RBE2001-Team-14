@@ -69,6 +69,9 @@ void QTRSensors::init(unsigned char *pins, unsigned char numSensors,
     _emitterPin = emitterPin;
 }
 
+unsigned char QTRSensors::getNumSensors() {
+  return _numSensors;
+}
 
 // Reads the sensor values into an array. There *MUST* be space
 // for as many values as there were sensors specified in the constructor.

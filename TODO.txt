@@ -1,0 +1,62 @@
+** TASKS **
+
+~ NO_TASK:
+  - Empty task. Anything to do?
+  - Rename to startup / calibration task?
+
+~ AQUIRE_NEW_ROD:
+  - Drive from storage to supply
+
+  1. Drive until alignment switch is pressed
+  2. Grab rod
+  3. Reverse for <time>
+  4. Turn around onto line
+
+  --> DROP_OFF_AT_REACTOR
+
+~ STORE_USED_ROD:
+  - Drive from reactor to storage
+
+  1. Drive forward from reactor
+  2. Count lines
+  3. Turn correct direction towards storage
+  4. Drive until alignment switch is pressed
+  5. Open grabber
+  6. Reverse for <time>
+  7. Turn around onto line
+
+  --> AQUIRE_NEW_ROD
+
+~ PICKUP_FROM_REACTOR:
+  - Drive from reactor to reactor
+
+  1. Turn around onto line
+    .. Open grabber
+  2. Drive until alignment switch is pressed
+  3. Move grabber down
+  4. Close grabber
+  5. Move grabber up
+  6. Reverse for <time>
+  7. Turn around onto line
+
+  --> STORE_USED_ROD
+
+~ DROP_OFF_AT_REACTOR:
+  - Drive from supply to reactor
+
+  1. Drive until horizontal line
+  2. Turn reactor direction onto line
+  3. Drive until alignment switch is pressed
+  4. Move grabber down
+  5. Open grabber
+  6. Move grabber up
+  7. Reverse for <time>
+  8. Turn around onto line
+
+  --> AQUIRE_NEW_ROD
+
+** BLUETOOTH **
+
+~ Finish testing and debugging fieldController and BTComms
+  - Debug the checksum stuff
+  - Print field status to LCD display
