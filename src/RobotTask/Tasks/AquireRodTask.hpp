@@ -3,6 +3,10 @@
 #include "../../Subsystems/RodGrabber/RodGrabber.hpp"
 #include "../../FieldController/FieldController.hpp"
 #include "../RobotTask.hpp"
+/*
+ *AquireRodTask
+ *Class to store the task of Aquiring the rod
+ */
 
 #ifndef AQUIRE_ROD_TASK_H
 #define AQUIRE_ROD_TASK_H

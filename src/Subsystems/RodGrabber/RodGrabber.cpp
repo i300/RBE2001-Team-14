@@ -1,5 +1,9 @@
 #include "RodGrabber.hpp"
-
+/* constructor -
+ * PIN_MOTOR - pin of the motor of the fourbar mechanism
+ * PIN_GRABBER - pin of the servo motor of the graber
+ * PIN_POTENTIOMETER - pin of the potentiometer of the fourbar mechanism
+ */
 RodGrabber::RodGrabber(int8 PIN_MOTOR, int8 PIN_GRABBER, int8 PIN_POTENTIOMETER) {
   _PIN_POTENTIOMETER = PIN_POTENTIOMETER;
 
