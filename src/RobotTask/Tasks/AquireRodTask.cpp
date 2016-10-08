@@ -1,8 +1,8 @@
 #include "AquireRodTask.hpp"
 
 /* constructor -
- * _rodLocation - the current location of the rod
- * _driveTrain - 
+ * rodLocation - the current location of the rod
+ * driveTrain - a pointer to the drive train
 */
 AquireRodTask::AquireRodTask(RobotLocation currentLocation, int8 rodLocation, DriveTrain *driveTrain) : super() {
   _rodLocation = rodLocation;
