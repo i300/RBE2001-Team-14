@@ -1,6 +1,6 @@
 #include "CalibrationTask.hpp"
 
-CalibrationTask::CalibrationTask(DriveTrain *driveTrain, RodGrabber *rodGrabber, FieldController *controller) : super() {
+CalibrationTask::CalibrationTask(DriveTrain *driveTrain, RodGrabber *rodGrabber, FieldController *controller) : super(CALIBRATION) {
   _driveTrain = driveTrain;
   _fieldController = controller;
   _rodGrabber = rodGrabber;

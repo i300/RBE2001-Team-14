@@ -11,6 +11,7 @@
 
 #include "RobotTask/RobotTask.hpp"
 #include "RobotTask/Tasks/CalibrationTask.hpp"
+#include "RobotTask/Tasks/PickUpFromReactorTask.hpp"
 #include "RobotTask/Tasks/AquireRodTask.hpp"
 #include "RobotTask/Tasks/StoreRodTask.hpp"
 
@@ -64,7 +65,7 @@ void setup() {
   rodGrabber->moveUp();
   rodGrabber->grab();
 
-  currentTask = new CalibrationTask(driveTrain, rodGrabber, fieldController);
+  currentTask = new RobotTask();
 }
 
 long nextTime = millis() + 2500;
@@ -95,17 +96,26 @@ void loop() {
     switch (taskType) {
 
       case NO_TASK:
+        currentTask = new CalibrationTask(driveTrain, rodGrabber, fieldController);
+        break;
+
+      case CALIBRATION:
+        currentTask = new PickUpFromReactorTask(driveTrain, rodGrabber, fieldController);
+        break;
+
+      case PICKUP_FROM_REACTOR:
+        // TODO: Use bluetooth to figure out closes storage that is open
         currentTask = new StoreRodTask(3, driveTrain, rodGrabber, fieldController);
         break;
-      case AQUIRE_NEW_ROD:
-        //currentTask = new DropOffAtReactorTask();
-        break;
+
       case STORE_USED_ROD:
         //currentTask = new AquireRodTask();
         break;
-      case PICKUP_FROM_REACTOR:
-        //currentTask = new StoreUsedRodTask();
+
+      case AQUIRE_NEW_ROD:
+        //currentTask = new DropOffAtReactorTask();
         break;
+
       case DROP_OFF_AT_REACTOR:
         //currentTask = new PickupFromReactorTask();
         break;
@@ -122,9 +132,12 @@ void loop() {
   if (currentTime > lastWriteTime + msPerFrame) {
     lcd.clear();
 
-    for (int i = 0; i < lineSensor->getNumSensors(); i++) {
-      lcd.print(String(lineSensor->calibratedMaximumOn[i]) + " ");
-      if (i == 3) lcd.setCursor(0, 1);
+    if (rodGrabber->isAtSetpoint()) {
+      lcd.print("At Setpoint!");
+    } else {
+      lcd.print("Moving to setpoint...");
+      lcd.setCursor(0, 1);
+      lcd.print(rodGrabber->readPotentiometer());
     }
 
     lastWriteTime = currentTime;

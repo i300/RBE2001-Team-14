@@ -4,15 +4,15 @@
  * rodLocation - the current location of the rod
  * *driveTrain - a pointer to the drive train
 */
-AquireRodTask::AquireRodTask(RobotLocation currentLocation, int8 rodLocation, DriveTrain *driveTrain) : super() {
+AquireRodTask::AquireRodTask(RobotLocation currentLocation, int8 rodLocation, DriveTrain *driveTrain) : super(AQUIRE_NEW_ROD) {
   _rodLocation = rodLocation;
   _driveTrain = driveTrain;
 
   state = BACK_UP;
 }
 
-/* isFinished - bool8 
- * returns ____ when the task is finished 
+/* isFinished - bool8
+ * returns ____ when the task is finished
  */
 bool8 AquireRodTask::isFinished() {
   return false;
@@ -20,7 +20,7 @@ bool8 AquireRodTask::isFinished() {
 
 
 /* update - void
- * Updates the robot based on the current task. 
+ * Updates the robot based on the current task.
  */
 void AquireRodTask::update() {
   super::update();
@@ -50,7 +50,7 @@ void AquireRodTask::update() {
   }
 }
 
-/* finished - void 
+/* finished - void
  * Called once the task is finished. Cleans up the finished task
  */
 void AquireRodTask::finished() {

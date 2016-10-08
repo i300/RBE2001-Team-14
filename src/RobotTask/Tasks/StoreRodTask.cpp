@@ -1,11 +1,11 @@
 #include "StoreRodTask.hpp"
-/* constructor - 
+/* constructor -
  * rodLocation - the current location of the rod
  * *driveTrain - a pointer to the drive train
  * *rodGrabber - a pointer to the rod grabber
  * *controller - a pointer to the controller of the field
  */
-StoreRodTask::StoreRodTask(int8 rodLocation, DriveTrain *driveTrain, RodGrabber *rodGrabber, FieldController *controller) : super() {
+StoreRodTask::StoreRodTask(int8 rodLocation, DriveTrain *driveTrain, RodGrabber *rodGrabber, FieldController *controller) : super(STORE_USED_ROD) {
   _driveTrain = driveTrain;
   _fieldController = controller;
   _rodGrabber = rodGrabber;
@@ -115,7 +115,7 @@ void StoreRodTask::update() {
 int StoreRodTask::getState() {
   return state;
 }
-/* finished - void 
+/* finished - void
  * Called once the task is finished. Cleans up the finished task
  */
 void StoreRodTask::finished() {

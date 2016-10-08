@@ -41,7 +41,7 @@ void DriveTrain::writeToMotors(float left, float right) {
   rightMotor->write(right);
 }
 
-/* arcadeDrive - void 
+/* arcadeDrive - void
  * Drives robot based on a forward speed and rotation value
  *
  * speed - Speed robot will drive at
@@ -95,7 +95,6 @@ void DriveTrain::tankDrive(float left, float right) {
   writeToMotors(left, right);
 }
 
-<<<<<<< HEAD
 /*
  *
  */
@@ -103,11 +102,8 @@ void DriveTrain::calibrateLineSensor() {
   _lineSensor->calibrate();
 }
 
-/* followLine - Drive the robot by following a line using PID control
-=======
-/* followLine - double 
+/* followLine - double
  * Drive the robot by following a line using PID control
->>>>>>> 413c42e274f54e9ae06465afac2acbb53df41602
  *
  * speed - speed to drive forward
  * @returns PID loop result
@@ -140,7 +136,6 @@ double DriveTrain::followLine(float speed) {
   return rotation;
 }
 
-<<<<<<< HEAD
 /* alignWithLine - Drive the robot by looking for a line using PID control
  *
  * speed - speed to drive forward
@@ -175,11 +170,8 @@ double DriveTrain::alignWithLine() {
 }
 
 
-/*
-=======
-/* turnOntoLine - bool8 
+/* turnOntoLine - bool8
  * Turns the robot towards a new line
->>>>>>> 413c42e274f54e9ae06465afac2acbb53df41602
  *
  * speed - speed to drive
  * direction - direction of turning
@@ -233,7 +225,7 @@ bool8 DriveTrain::turnWideOntoLine(float speed, int direction) {
     return false;
   }
 }
-/* updateLineCount - int 
+/* updateLineCount - int
  * keeps track of how many horizontal lines the robot has traveled
  *
  * @returns the number of horizontal lines traveled
@@ -254,20 +246,15 @@ int DriveTrain::updateLineCount() {
 
   return horizontalLinesSeen;
 }
-<<<<<<< HEAD
 
-/*
- *
-=======
 /* resetLineCount - void
  * resets the number of horizontal lines the robot has already traveled
->>>>>>> 413c42e274f54e9ae06465afac2acbb53df41602
  */
 void DriveTrain::resetLineCount() {
   horizontalLinesSeen = 0;
 }
 
-/* isAlignmentSwitchPressed - bool8 
+/* isAlignmentSwitchPressed - bool8
  * @returns 0 or 1 depending if the switch has been pressed
  */
 bool8 DriveTrain::isAlignmentSwitchPressed() {
