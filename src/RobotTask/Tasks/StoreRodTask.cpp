@@ -1,5 +1,10 @@
 #include "StoreRodTask.hpp"
-
+/* constructor - 
+ * rodLocation - the current location of the rod
+ * *driveTrain - a pointer to the drive train
+ * *rodGrabber - a pointer to the rod grabber
+ * *controller - a pointer to the controller of the field
+ */
 StoreRodTask::StoreRodTask(int8 rodLocation, DriveTrain *driveTrain, RodGrabber *rodGrabber, FieldController *controller) : super() {
   _driveTrain = driveTrain;
   _fieldController = controller;
@@ -11,10 +16,16 @@ StoreRodTask::StoreRodTask(int8 rodLocation, DriveTrain *driveTrain, RodGrabber 
   state = SRR_DRIVE_TO_LINE;
 }
 
+/* isFinished - bool8 finished
+ * returns _____ when the task is finished
+ */
 bool8 StoreRodTask::isFinished() {
   return false;//state == SRR_FINISHED;
 }
 
+/* update - void 
+ * Updates the robot based on the current task.  
+ */
 void StoreRodTask::update() {
   super::update();
 
@@ -93,11 +104,14 @@ void StoreRodTask::update() {
       break;
   }
 }
-
+/* getState - int currentState
+ * Returns the current state. */
 int StoreRodTask::getState() {
   return state;
 }
-
+/* finished - void 
+ * Called once the task is finished. Cleans up the finished task
+ */
 void StoreRodTask::finished() {
 
 }
