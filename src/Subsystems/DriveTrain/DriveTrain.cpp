@@ -93,6 +93,13 @@ void DriveTrain::tankDrive(float left, float right) {
   writeToMotors(left, right);
 }
 
+/*
+ *
+ */
+void DriveTrain::calibrateLineSensor() {
+  _lineSensor->calibrate();
+}
+
 /* followLine - Drive the robot by following a line using PID control
  *
  * speed - speed to drive forward
@@ -117,7 +124,7 @@ double DriveTrain::followLine(float speed) {
   sumError += error;
   lastError = error;
 
-  float rotation = error * kP + iPart * kI + dPart * kD;
+  float rotation = (error * kP) + (iPart * kI) + (dPart * kD);
 
   arcadeDrive(speed, rotation);
 
@@ -126,10 +133,67 @@ double DriveTrain::followLine(float speed) {
   return rotation;
 }
 
+/* alignWithLine - Drive the robot by looking for a line using PID control
+ *
+ * speed - speed to drive forward
+ * @returns PID loop result
+ */
+double DriveTrain::alignWithLine() {
+  unsigned long currentTime = millis();
+
+  unsigned int sensorValues[_lineSensor->getNumSensors()];
+  unsigned int linePosition = _lineSensor->readLine(sensorValues);
+
+  // Reset sum of error and last error if measurements are very out of date
+  if (currentTime > lastMeasurement + 1000) {
+    sumError = 0;
+    lastError = 0;
+  }
+
+  double error = ((int)linePosition - LINEFOLLOW_CENTER_POSITION) / (double)LINEFOLLOW_CENTER_POSITION;
+  double iPart = sumError;
+  double dPart = error - lastError;
+
+  sumError += error;
+  lastError = error;
+
+  float rotation = (error * kP_align) + (iPart * kI_align) + (dPart * kD_align);
+
+  tankDrive(-rotation, rotation);
+
+  lastMeasurement = currentTime;
+
+  return rotation;
+}
+
+
 /*
  *
  */
-bool8 DriveTrain::turnOntoLine(float speed, int direction) {
+bool8 DriveTrain::turnOntoLine(float speed) {
+  speed = constrain(speed, -1.0, 1.0);
+
+  unsigned int sensorValues[_lineSensor->getNumSensors()];
+  _lineSensor->readCalibrated(sensorValues);
+  unsigned int middleSensorValue = sensorValues[6];
+
+  int error = 1000 - middleSensorValue;
+
+  Serial.println("Error: " + String(error));
+
+  if (abs(error) < TURN_ONTO_LINE_TOLERANCE) {
+    stop();
+    return true;
+  } else {
+    speed = speed * kP_turn * (error / 1000.0);
+
+    tankDrive(speed, -speed);
+    return false;
+  }
+}
+
+bool8 DriveTrain::turnWideOntoLine(float speed, int direction) {
+  speed = constrain(speed, -1, 1);
   direction = constrain(direction, -1, 1);
 
   unsigned int sensorValues[_lineSensor->getNumSensors()];
@@ -146,7 +210,11 @@ bool8 DriveTrain::turnOntoLine(float speed, int direction) {
   } else {
     speed = speed * kP_turn * (error / 1000.0);
 
-    tankDrive(speed * direction, -speed * direction);
+    if (direction == 1) {
+      tankDrive(-speed, 0);
+    } else {
+      tankDrive(0, -speed);
+    }
     return false;
   }
 }
@@ -168,6 +236,9 @@ int DriveTrain::updateLineCount() {
   return horizontalLinesSeen;
 }
 
+/*
+ *
+ */
 void DriveTrain::resetLineCount() {
   horizontalLinesSeen = 0;
 }

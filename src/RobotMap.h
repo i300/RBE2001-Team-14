@@ -21,14 +21,14 @@ static const int8 PIN_SENSOR_ALIGNMENT = 22;
 static const int8 NUM_SENSORS = 8;
 static const int8 NUM_SAMPLES_PER_SENSOR = 4;
 
-static const int8 PIN_SENSOR_LINE1 = A8;
-static const int8 PIN_SENSOR_LINE2 = A9;
-static const int8 PIN_SENSOR_LINE3 = A10;
-static const int8 PIN_SENSOR_LINE4 = A11;
-static const int8 PIN_SENSOR_LINE5 = A12;
-static const int8 PIN_SENSOR_LINE6 = A13;
-static const int8 PIN_SENSOR_LINE7 = A14;
-static const int8 PIN_SENSOR_LINE8 = A15;
+static const int8 PIN_SENSOR_LINE1 = A0;
+static const int8 PIN_SENSOR_LINE2 = A1;
+static const int8 PIN_SENSOR_LINE3 = A2;
+static const int8 PIN_SENSOR_LINE4 = A3;
+static const int8 PIN_SENSOR_LINE5 = A4;
+static const int8 PIN_SENSOR_LINE6 = A5;
+static const int8 PIN_SENSOR_LINE7 = A6;
+static const int8 PIN_SENSOR_LINE8 = A7;
 static const int8 PIN_LINESENSOR_EMITTER = 23;
 
 #endif

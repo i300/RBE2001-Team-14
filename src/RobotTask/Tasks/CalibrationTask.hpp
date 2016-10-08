@@ -4,28 +4,25 @@
 #include "../../FieldController/FieldController.hpp"
 #include "../RobotTask.hpp"
 
-#ifndef STORE_ROD_TASK_H
-#define STORE_ROD_TASK_H
+#ifndef CALIBRATION_H
+#define CALIBRATION_H
 
-enum StoreRodState {
-  SRR_DRIVE_TO_LINE,
-  SRR_TURN_ONTO_LINE,
-  SRR_ALIGN,
-  SRR_DRIVE_TO_STORAGE,
-  SRR_INSERT_ROD,
-  SRR_TURN_AROUND,
-  SRR_FINISHED
+enum CalibrationState {
+  CS_SWING_LEFT,
+  CS_SWING_RIGHT,
+  CS_SWING_FINAL,
+  CS_FINISHED
 };
 
-class StoreRodTask : public RobotTask {
+class CalibrationTask : public RobotTask {
 private:
   typedef RobotTask super;
 
 protected:
-  StoreRodState state;
+  CalibrationState state;
   unsigned long timeLastStateSwitch = 0;
 
-  int8 _rodLocation;
+  const int SWEEP_TIME = 750; // ms
 
   DriveTrain *_driveTrain;
   RodGrabber *_rodGrabber;
@@ -34,7 +31,7 @@ protected:
   void finished();
 
 public:
-  StoreRodTask(int8 rodLocation, DriveTrain *driveTrain, RodGrabber *rodGrabber, FieldController *controller);
+  CalibrationTask(DriveTrain *driveTrain, RodGrabber *rodGrabber, FieldController *controller);
 
   int getState();
 

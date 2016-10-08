@@ -10,6 +10,7 @@
 #include "Subsystems/RodGrabber/RodGrabber.hpp"
 
 #include "RobotTask/RobotTask.hpp"
+#include "RobotTask/Tasks/CalibrationTask.hpp"
 #include "RobotTask/Tasks/AquireRodTask.hpp"
 #include "RobotTask/Tasks/StoreRodTask.hpp"
 
@@ -40,6 +41,8 @@ void setup() {
   delay(50); // Hold up, wait a minute
   lcd.clear(); // Clear LCD
 
+  delay(500);
+
   lcd.print("Waiting to start...");
 
   pinMode(PIN_SENSOR_ALIGNMENT, INPUT);
@@ -48,36 +51,20 @@ void setup() {
   }
 
   lcd.clear();
-  lcd.print("Calibrating...");
 
   uint8 sensorPins[] = { PIN_SENSOR_LINE1, PIN_SENSOR_LINE2, PIN_SENSOR_LINE3,
                          PIN_SENSOR_LINE4, PIN_SENSOR_LINE5, PIN_SENSOR_LINE6,
                          PIN_SENSOR_LINE7, PIN_SENSOR_LINE8 };
   lineSensor = new QTRSensorsAnalog(sensorPins, NUM_SENSORS, NUM_SAMPLES_PER_SENSOR, PIN_LINESENSOR_EMITTER);
-  for (int i = 0; i < 40*5; i++) {  // make the calibration take about 10 seconds
-    lineSensor->calibrate();       // reads all sensors 10 times at 2.5 ms per six sensors (i.e. ~25 ms per call)
-  }
-
-  for (int i = 0; i < NUM_SENSORS; i++) {
-    Serial.print(lineSensor->calibratedMinimumOn[i]);
-    Serial.print(' ');
-  }
-  Serial.println();
-
-  for (int i = 0; i < NUM_SENSORS; i++) {
-    Serial.print(lineSensor->calibratedMaximumOn[i]);
-    Serial.print(' ');
-  }
-  Serial.println();
-  Serial.println();
 
   driveTrain = new DriveTrain(PIN_MOTOR_LEFT, PIN_MOTOR_RIGHT, PIN_SENSOR_ALIGNMENT,
                               &lcd, lineSensor, DriveTrainInvertedSide::INVERTED_LEFT);
   rodGrabber = new RodGrabber(PIN_MOTOR_GRABBER, PIN_SERVO_GRABBER, PIN_SENSOR_POT);
 
+  rodGrabber->moveUp();
   rodGrabber->grab();
 
-  currentTask = new RobotTask();
+  currentTask = new CalibrationTask(driveTrain, rodGrabber, fieldController);
 }
 
 long nextTime = millis() + 2500;

@@ -39,8 +39,11 @@ public:
 
   const double MAX_LINEFOLLOWING_SPEED = 0.275; // determined
 
+  void calibrateLineSensor();
+  double alignWithLine();
   double followLine(float speed);
-  bool8 turnOntoLine(float speed, int direction);
+  bool8 turnOntoLine(float speed);
+  bool8 turnWideOntoLine(float speed, int direction);
   int updateLineCount();
   void resetLineCount();
 
@@ -49,9 +52,14 @@ public:
   void stop();
 
   // Line following constants
-  double kP = 0.75;
+  double kP = 0.5;
   double kI = 0;
-  double kD = 0.5;
+  double kD = 0.4;
+
+  // Line aligning constants
+  double kP_align = 0.5;
+  double kI_align = 0;
+  double kD_align = 0.4;
 
   // Turning constants
   double kP_turn = 1.2;
