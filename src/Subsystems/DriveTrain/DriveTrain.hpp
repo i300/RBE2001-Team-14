@@ -4,6 +4,17 @@
 #include "../../Motor/Motor.hpp"
 #include "../../Utilities.h"
 
+/*
+ * DriveTrain
+ * Class to store the information of the drive train of the robot
+ * such information includes:
+ * leftMotor
+ * rightMotor
+ * lineSensors
+ * 
+ * See comments below for more information
+ */
+
 #ifndef DRIVETRAIN_H
 #define DRIVETRAIN_H
 
