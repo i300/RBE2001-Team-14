@@ -11,10 +11,17 @@ AquireRodTask::AquireRodTask(RobotLocation currentLocation, int8 rodLocation, Dr
   state = BACK_UP;
 }
 
+/* isFinished - bool8 finished
+ * returns ____ when the task is finished 
+ */
 bool8 AquireRodTask::isFinished() {
   return false;
 }
 
+
+/* update - void
+ * Updates the robot based on the current task. 
+ */
 void AquireRodTask::update() {
   super::update();
 
@@ -43,6 +50,9 @@ void AquireRodTask::update() {
   }
 }
 
+/* finished - void 
+ * Called once the task is finished. Cleans up the finished task
+ */
 void AquireRodTask::finished() {
 
 }
