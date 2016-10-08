@@ -25,6 +25,7 @@ RodGrabber *rodGrabber;
 
 // Task stuff
 RobotTask *currentTask;
+int8 currentReactor = 0; // 0 = Reactor A, 1 = Reactor B
 
 // LCD
 LiquidCrystal lcd(40, 41, 42, 43, 44, 45);
@@ -65,7 +66,7 @@ void setup() {
   rodGrabber->moveUp();
   rodGrabber->grab();
 
-  currentTask = new RobotTask();
+  currentTask = new CalibrationTask(driveTrain, rodGrabber, fieldController);
 }
 
 long nextTime = millis() + 2500;
@@ -96,7 +97,7 @@ void loop() {
     switch (taskType) {
 
       case NO_TASK:
-        currentTask = new CalibrationTask(driveTrain, rodGrabber, fieldController);
+        // Nothing to see here...
         break;
 
       case CALIBRATION:
@@ -104,12 +105,13 @@ void loop() {
         break;
 
       case PICKUP_FROM_REACTOR:
-        // TODO: Use bluetooth to figure out closes storage that is open
+        // TODO: Use bluetooth to figure out closest storage that is open
         currentTask = new StoreRodTask(3, driveTrain, rodGrabber, fieldController);
         break;
 
       case STORE_USED_ROD:
-        //currentTask = new AquireRodTask();
+        // TODO: Use bluetooth to figure out closest supply that is open
+        currentTask = new AquireRodTask(3, 1, driveTrain, rodGrabber, fieldController);
         break;
 
       case AQUIRE_NEW_ROD:
@@ -117,11 +119,16 @@ void loop() {
         break;
 
       case DROP_OFF_AT_REACTOR:
-        //currentTask = new PickupFromReactorTask();
+        if (currentReactor == 0) {
+          currentTask = new PickUpFromReactorTask(driveTrain, rodGrabber, fieldController);
+          currentReactor = 1;
+        } else {
+          currentTask = new RobotTask();
+        }
         break;
 
       default:
-        //currentTask = RobotTask();
+        //currentTask = new RobotTask();
         break;
 
     }

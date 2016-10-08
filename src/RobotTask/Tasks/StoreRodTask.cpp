@@ -20,7 +20,7 @@ StoreRodTask::StoreRodTask(int8 rodLocation, DriveTrain *driveTrain, RodGrabber 
  * returns _____ when the task is finished
  */
 bool8 StoreRodTask::isFinished() {
-  return false;//state == SRR_FINISHED;
+  return (state == SRR_FINISHED) && (millis() > timeLastStateSwitch + 1000);
 }
 
 /* update - void 
@@ -98,6 +98,7 @@ void StoreRodTask::update() {
         if (_driveTrain->turnOntoLine(-0.2)) {
           _driveTrain->stop();
           state = SRR_FINISHED;
+          timeLastStateSwitch = currentTime;
         }
       }
       break;

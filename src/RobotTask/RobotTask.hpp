@@ -21,21 +21,6 @@ enum RobotTaskType {
   DROP_OFF_AT_REACTOR
 };
 
-enum RobotLocation {
-  REACTOR_A,
-  REACTOR_B,
-
-  SUPPLY_1,
-  SUPPLY_2,
-  SUPPLY_3,
-  SUPPLY_4,
-
-  STORAGE_1,
-  STORAGE_2,
-  STORAGE_3,
-  STORAGE_4,
-};
-
 class RobotTask {
 
 protected:

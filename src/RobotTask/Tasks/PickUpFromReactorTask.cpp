@@ -41,13 +41,15 @@ void PickUpFromReactorTask::update() {
        */
       if (_rodGrabber->isAtSetpoint()) {
         _rodGrabber->grab();
-        if (currentTime > timeLastStateSwitch + 2000) {
+        if (currentTime > timeLastStateSwitch + 500) {
           _rodGrabber->moveUp();
           if (_rodGrabber->isAtSetpoint()) {
             state = PFR_TURN_AROUND;
             timeLastStateSwitch = currentTime;
           }
         }
+      } else {
+        timeLastStateSwitch = currentTime;
       }
       break;
     case PFR_TURN_AROUND:

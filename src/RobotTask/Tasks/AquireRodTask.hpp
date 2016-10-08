@@ -12,29 +12,36 @@
 #define AQUIRE_ROD_TASK_H
 
 enum AquireRodState {
-  BACK_UP,
-  TURN_ONTO_LINE,
-  DRIVE_TO_SUPPLY,
-  FINISHED
+  AR_DRIVE_TO_MAIN_LINE,
+  AR_TURN_ONTO_MAIN_LINE,
+  AR_DRIVE_TO_SUPPLY,
+  AR_TURN_TO_SUPPLY,
+  AR_ALIGN_WITH_LINE,
+  AR_DRIVE_DIRECT_TO_SUPPLY,
+  AR_PICKUP_ROD,
+  AR_TURN_AROUND,
+  AR_FINISHED
 };
 
-class AquireRodTask : RobotTask {
+class AquireRodTask : public RobotTask {
 private:
   typedef RobotTask super;
 
   AquireRodState state;
+  unsigned long timeLastStateSwitch = 0;
 
   DriveTrain *_driveTrain;
+  RodGrabber *_rodGrabber;
   FieldController *_fieldController;
 
-  int8 _currentLocation;
+  int8 _initialLocation;
   int8 _rodLocation;
 
 protected:
   void finished();
 
 public:
-  AquireRodTask(RobotLocation currentLocation, int8 rodLocation, DriveTrain *driveTrain);
+  AquireRodTask(int8 currentLocation, int8 rodLocation, DriveTrain *driveTrain, RodGrabber *rodGrabber, FieldController *controller);
 
   virtual bool8 isFinished();
   virtual void update();
