@@ -5,11 +5,12 @@
  * *rodGrabber - a pointer to the rod grabber
  * *controller - a pointer to the controller of the field
  */
-StoreRodTask::StoreRodTask(int8 rodLocation, DriveTrain *driveTrain, RodGrabber *rodGrabber, FieldController *controller) : super(STORE_USED_ROD) {
+StoreRodTask::StoreRodTask(int8 rodLocation, int8 currentReactor, DriveTrain *driveTrain, RodGrabber *rodGrabber, FieldController *controller) : super(STORE_USED_ROD) {
   _driveTrain = driveTrain;
   _fieldController = controller;
   _rodGrabber = rodGrabber;
   _rodLocation = rodLocation;
+  _currentReactor = currentReactor;
 
   _driveTrain->resetLineCount();
 
@@ -38,8 +39,16 @@ void StoreRodTask::update() {
 
       _driveTrain->followLine(_driveTrain->MAX_LINEFOLLOWING_SPEED);
       int lineCount = _driveTrain->updateLineCount();
+      int rodLocation = 0;
 
-      if (lineCount == _rodLocation) {
+      // calculate # of lines to drive based on the current reactor we're coming from
+      if (_currentReactor == 0)
+        rodLocation = _rodLocation;
+      else
+        // total # of supplys+1 - rodLocation relative to reactor A
+        rodLocation = 5 - _rodLocation;
+
+      if (lineCount == rodLocation) {
         state = SRR_TURN_ONTO_LINE;
         timeLastStateSwitch = currentTime;
       }

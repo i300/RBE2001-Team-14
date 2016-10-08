@@ -26,6 +26,7 @@ protected:
   unsigned long timeLastStateSwitch = 0;
 
   int8 _rodLocation;
+  int8 _currentReactor;
 
   DriveTrain *_driveTrain;
   RodGrabber *_rodGrabber;
@@ -34,7 +35,7 @@ protected:
   void finished();
 
 public:
-  StoreRodTask(int8 rodLocation, DriveTrain *driveTrain, RodGrabber *rodGrabber, FieldController *controller);
+  StoreRodTask(int8 rodLocation, int8 currentReactor, DriveTrain *driveTrain, RodGrabber *rodGrabber, FieldController *controller);
 
   int getState();
 

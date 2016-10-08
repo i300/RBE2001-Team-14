@@ -72,13 +72,14 @@ void AquireRodTask::update() {
       break;
     }
 
-    case AR_DRIVE_TO_SUPPLY:
+    case AR_DRIVE_TO_SUPPLY: {
       _driveTrain->followLine(0.2);
       if (_driveTrain->updateLineCount() == abs(_rodLocation - _initialLocation)) {
         state = AR_TURN_TO_SUPPLY;
         timeLastStateSwitch = currentTime;
       }
       break;
+    }
 
     case AR_TURN_TO_SUPPLY: {
       int turnDirection = 0;

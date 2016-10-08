@@ -106,12 +106,12 @@ void loop() {
 
       case PICKUP_FROM_REACTOR:
         // TODO: Use bluetooth to figure out closest storage that is open
-        currentTask = new StoreRodTask(3, driveTrain, rodGrabber, fieldController);
+        currentTask = new StoreRodTask(3, currentReactor, driveTrain, rodGrabber, fieldController);
         break;
 
       case STORE_USED_ROD:
         // TODO: Use bluetooth to figure out closest supply that is open
-        currentTask = new AquireRodTask(3, 1, driveTrain, rodGrabber, fieldController);
+        currentTask = new AquireRodTask(3, 2, driveTrain, rodGrabber, fieldController);
         break;
 
       case AQUIRE_NEW_ROD:
