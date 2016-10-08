@@ -150,7 +150,9 @@ bool8 DriveTrain::turnOntoLine(float speed, int direction) {
     return false;
   }
 }
-
+/* updateLineCount - int horizontal lines
+ * keeps track of how many horizontal lines the robot has traveled
+ */
 int DriveTrain::updateLineCount() {
   unsigned char numSensors = _lineSensor->getNumSensors();
   unsigned int sensorValues[numSensors];
@@ -167,21 +169,23 @@ int DriveTrain::updateLineCount() {
 
   return horizontalLinesSeen;
 }
-
+/* resetLineCount - void
+ * resets the number of horizontal lines the robot has already traveled
+ */
 void DriveTrain::resetLineCount() {
   horizontalLinesSeen = 0;
 }
 
-/*
- *
+/* isAlignmentSwitchPressed - bool8 
+ * returns 0 or 1 depending if the switch has been pressed
  */
 bool8 DriveTrain::isAlignmentSwitchPressed() {
   Serial.println(digitalRead(_alignmentSwitchPin));
   return !digitalRead(_alignmentSwitchPin);
 }
 
-/* stop - Sends zero to the drive motors
- *
+/* stop - void
+ *Sends zero to the drive motors to stop motion
  */
 void DriveTrain::stop() {
   writeToMotors(0, 0);
