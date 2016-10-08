@@ -2,7 +2,7 @@
 
 /* constructor -
  * rodLocation - the current location of the rod
- * driveTrain - a pointer to the drive train
+ * *driveTrain - a pointer to the drive train
 */
 AquireRodTask::AquireRodTask(RobotLocation currentLocation, int8 rodLocation, DriveTrain *driveTrain) : super() {
   _rodLocation = rodLocation;
@@ -11,7 +11,7 @@ AquireRodTask::AquireRodTask(RobotLocation currentLocation, int8 rodLocation, Dr
   state = BACK_UP;
 }
 
-/* isFinished - bool8 finished
+/* isFinished - bool8 
  * returns ____ when the task is finished 
  */
 bool8 AquireRodTask::isFinished() {
