@@ -56,7 +56,11 @@ void RodGrabber::release() {
 void RodGrabber::update() {
   double error = setpoint - readPotentiometer();
 
-  motor->write(error * kP);
+  if (error > 0) {
+    motor->write(error * kP);
+  } else {
+    motor->write(error * kP_down);
+  }
 }
 
 /* isAtSetpoint - bool8

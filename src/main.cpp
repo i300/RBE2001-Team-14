@@ -14,6 +14,7 @@
 #include "RobotTask/Tasks/PickUpFromReactorTask.hpp"
 #include "RobotTask/Tasks/AquireRodTask.hpp"
 #include "RobotTask/Tasks/StoreRodTask.hpp"
+#include "RobotTask/Tasks/DropOffAtReactorTask.hpp"
 
 // Sensors and controllers
 FieldController *fieldController;
@@ -64,7 +65,7 @@ void setup() {
   rodGrabber = new RodGrabber(PIN_MOTOR_GRABBER, PIN_SERVO_GRABBER, PIN_SENSOR_POT);
 
   rodGrabber->moveUp();
-  rodGrabber->grab();
+  rodGrabber->release();
 
   currentTask = new CalibrationTask(driveTrain, rodGrabber, fieldController);
 }
@@ -101,7 +102,8 @@ void loop() {
         break;
 
       case CALIBRATION:
-        currentTask = new PickUpFromReactorTask(driveTrain, rodGrabber, fieldController);
+        //currentTask = new PickUpFromReactorTask(driveTrain, rodGrabber, fieldController);
+        currentTask = new AquireRodTask(3, 2, driveTrain, rodGrabber, fieldController);
         break;
 
       case PICKUP_FROM_REACTOR:
@@ -115,13 +117,13 @@ void loop() {
         break;
 
       case AQUIRE_NEW_ROD:
-        //currentTask = new DropOffAtReactorTask();
+        currentTask = new DropOffAtReactorTask(currentReactor, driveTrain, rodGrabber, fieldController);
         break;
 
       case DROP_OFF_AT_REACTOR:
         if (currentReactor == 0) {
-          currentTask = new PickUpFromReactorTask(driveTrain, rodGrabber, fieldController);
           currentReactor = 1;
+          currentTask = new PickUpFromReactorTask(driveTrain, rodGrabber, fieldController);
         } else {
           currentTask = new RobotTask();
         }

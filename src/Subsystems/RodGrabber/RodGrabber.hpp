@@ -33,8 +33,7 @@ private:
   //Variables for the PID loop
   double setpoint = 0; //desired position
   double kP = 5.0;
-  double kI = 0.0;
-  double kD = 0.0;
+  double kP_down = 1.0;
 
 public:
 
