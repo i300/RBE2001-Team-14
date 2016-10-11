@@ -38,7 +38,7 @@ void FieldController::update() {
     message.destination = field.getMessageByte(DESTINATION_INDEX);
 
     // Ignore messages with reserved types
-    if (message.type > kReserved && message.type < 0x08) break;
+    if (message.type <= kReserved && message.type >= 0x08) break;
 
     switch (message.type) {
       case kStorageAvailability:
@@ -129,7 +129,7 @@ bool8 FieldController::getAvailability(byte container, int8 tubeIndex) {
    * 0001000 >> 3 = 1
    * Therefore a rod is present in the tube
    */
-  return (container & (1 << (7 - tubeIndex)) >> (7 - tubeIndex));
+  return (container & (1 << (tubeIndex))) >> (tubeIndex);
 }
 
 /**
@@ -137,4 +137,36 @@ bool8 FieldController::getAvailability(byte container, int8 tubeIndex) {
  */
 bool8 FieldController::getStopped() {
   return stopped;
+}
+
+int8 FieldController::getClosestOpenStorage(int8 currentReactor) {
+  return getClosestAvailability(storageAvailability, currentReactor);
+}
+
+int8 FieldController::getClosestFullSupply(int8 currentReactor) {
+  return getClosestAvailability(supplyAvailability, currentReactor);
+}
+
+int8 FieldController::getClosestAvailability(byte container, int8 currentReactor) {
+  int8 desiredValue = 0;
+  if (container == storageAvailability) {
+    desiredValue = 0;
+  } else if (container == supplyAvailability) {
+    desiredValue = 1;
+  }
+  if (currentReactor == 0) {
+    for (int8 i=1; i<=4; i++) {
+      if (getAvailability(container, i-1) == desiredValue) {
+        return i;
+      }
+    }
+  } else if (currentReactor == 1) {
+    for (int8 i=4; i>=1; i--) {
+      if (getAvailability(container, i-1) == desiredValue) {
+        return i;
+      }
+    }
+  }
+
+  return 0;
 }

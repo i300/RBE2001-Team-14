@@ -1,4 +1,5 @@
 #include "BTComms.h"
+
 #include "Arduino.h"
 
 /**
@@ -54,43 +55,45 @@ unsigned char BTComms::getMessageByte(unsigned index) {
  * Read a message from Bluetooth
  * This method reads messages from Bluetooth by looking for the message start byte, then
  * reading the message length and data.
+ *
+ * You should probably modify this to ignore messages with invalid checksums!
  */
 bool BTComms::read() {
-	uint8_t calculatedChecksum = 0xFF;
-	while (Serial3.available()) {
-		//Serial.println("Message Start");
+	uint8_t calculatedChecksum = 255;
+  while (Serial3.available()) {
     unsigned inByte = Serial3.read();
     switch (BTstate) {
       case kLookingForStart:
         if (inByte != kMessageStart)
         	break;
         BTstate = kReadingMessageLength;
+				Serial.println("Message Start");
         break;
       case kReadingMessageLength:
-        messageLength = inByte;
+        messageLength = inByte - 1;
         messageIndex = 0;
         BTstate = kReadMessage;
-
-				//Serial.println("Message Length: " + String(inByte));
-
-				calculatedChecksum -= inByte;
+				Serial.println(messageLength, HEX);
         break;
       case kReadMessage:
+				Serial.print(String(messageIndex) + ": ");
+				if (messageIndex == 3) Serial.println(inByte, BIN);
+				else Serial.println(inByte, HEX);
         message[messageIndex++] = inByte;
         if (messageIndex >= messageLength) {
+					calculatedChecksum -= messageLength + 1;
+					for (int i=0; i < messageLength-1; i++) {
+						calculatedChecksum -= message[i];
+					}
           BTstate = kLookingForStart;
-					//Serial.print(calculatedChecksum, HEX);
-					//Serial.print(" == ");
-					//Serial.println(inByte, HEX);
-					//Serial.println("Message End"); Serial.println("");
+					Serial.print("C: "); Serial.println(calculatedChecksum, HEX);
+					Serial.println("Message End");
 					if (calculatedChecksum == inByte) {
-						return true;
+	          return true;
 					} else {
 						return false;
 					}
-        } else {
-					calculatedChecksum -= inByte;
-				}
+        }
         break;
        default:
         Serial.println("Invalid state");

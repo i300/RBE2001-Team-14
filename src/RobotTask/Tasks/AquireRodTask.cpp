@@ -4,12 +4,13 @@
  * rodLocation - the current location of the rod
  * *driveTrain - a pointer to the drive train
 */
-AquireRodTask::AquireRodTask(int8 currentLocation, int8 rodLocation,
+AquireRodTask::AquireRodTask(int8 currentLocation, int8 rodLocation, int8 currentReactor,
                              DriveTrain *driveTrain, RodGrabber *rodGrabber,
                              FieldController *controller) : super(AQUIRE_NEW_ROD) {
   _driveTrain = driveTrain;
   _rodGrabber = rodGrabber;
   _fieldController = controller;
+  _currentReactor = currentReactor;
 
   _driveTrain->resetLineCount();
 

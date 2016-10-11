@@ -21,14 +21,14 @@ public:
   } RadiationStatus;
 
   typedef enum {
-    kReserved,
-  	kStorageAvailability,
-  	kSupplyAvailability,
-  	kRadiationAlert,
-  	kStopMovement,
-  	kResumeMovement,
-  	kRobotStatus,
-  	kHeartbeat
+    kReserved,              // 0
+  	kStorageAvailability,   // 1
+  	kSupplyAvailability,    // 2
+  	kRadiationAlert,        // 3
+  	kStopMovement,          // 4
+  	kResumeMovement,        // 5
+  	kRobotStatus,           // 6
+  	kHeartbeat              // 7
   } MessageType;
 
   FieldController();
@@ -42,6 +42,8 @@ public:
   bool8 getStopped();
   bool8 getStorageAvailability(int8 tube);
   bool8 getSupplyAvailability(int8 tube);
+  int8 getClosestOpenStorage(int8 currentReactor);
+  int8 getClosestFullSupply(int8 currentReactor);
 
 private:
   byte storageAvailability;
@@ -57,6 +59,7 @@ private:
   const int DATA_OR_CHECKSUM_INDEX = 0x03;
 
   bool8 getAvailability(byte container, int8 index);
+  int8 getClosestAvailability(byte container, int8 currentReactor);
 };
 
 #endif

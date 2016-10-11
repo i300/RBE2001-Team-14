@@ -36,12 +36,13 @@ private:
 
   int8 _initialLocation;
   int8 _rodLocation;
+  int8 _currentReactor;
 
 protected:
   void finished();
 
 public:
-  AquireRodTask(int8 currentLocation, int8 rodLocation, DriveTrain *driveTrain, RodGrabber *rodGrabber, FieldController *controller);
+  AquireRodTask(int8 currentLocation, int8 rodLocation, int8 currentReactor, DriveTrain *driveTrain, RodGrabber *rodGrabber, FieldController *controller);
 
   virtual bool8 isFinished();
   virtual void update();

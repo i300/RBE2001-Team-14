@@ -27,6 +27,7 @@ RodGrabber *rodGrabber;
 // Task stuff
 RobotTask *currentTask;
 int8 currentReactor = 0; // 0 = Reactor A, 1 = Reactor B
+int8 lastLocation = 0;
 
 // LCD
 LiquidCrystal lcd(40, 41, 42, 43, 44, 45);
@@ -48,7 +49,7 @@ void setup() {
 
   lcd.print("Waiting to start...");
 
-  pinMode(PIN_SENSOR_ALIGNMENT, INPUT);
+  pinMode(PIN_SENSOR_ALIGNMENT, INPUT_PULLUP);
   while (digitalRead(PIN_SENSOR_ALIGNMENT) == 1) {
     delay(10); // wait to start
   }
@@ -65,7 +66,7 @@ void setup() {
   rodGrabber = new RodGrabber(PIN_MOTOR_GRABBER, PIN_SERVO_GRABBER, PIN_SENSOR_POT);
 
   rodGrabber->moveUp();
-  rodGrabber->release();
+  rodGrabber->grab();
 
   currentTask = new CalibrationTask(driveTrain, rodGrabber, fieldController);
 }
@@ -78,6 +79,7 @@ void loop() {
 
   // Update bluetooth controller
   fieldController->update();
+  //fieldController->printStatus();
 
   // Stop all actions if robot is stopped
   if (fieldController->getStopped()) {
@@ -93,6 +95,7 @@ void loop() {
   // Update state machine if task is finished
   RobotTaskType taskType = currentTask->getType();
   if (currentTask->isFinished()) {
+    // Delete old task off the heap
     delete currentTask;
 
     switch (taskType) {
@@ -102,19 +105,25 @@ void loop() {
         break;
 
       case CALIBRATION:
-        //currentTask = new PickUpFromReactorTask(driveTrain, rodGrabber, fieldController);
-        currentTask = new AquireRodTask(3, 2, driveTrain, rodGrabber, fieldController);
+        currentTask = new PickUpFromReactorTask(driveTrain, rodGrabber, fieldController);
+        //currentTask = new AquireRodTask(3, 2, driveTrain, rodGrabber, fieldController);
         break;
 
-      case PICKUP_FROM_REACTOR:
+      case PICKUP_FROM_REACTOR: {
         // TODO: Use bluetooth to figure out closest storage that is open
-        currentTask = new StoreRodTask(3, currentReactor, driveTrain, rodGrabber, fieldController);
+        int8 closestOpenStorage = fieldController->getClosestOpenStorage(currentReactor);
+        currentTask = new StoreRodTask(closestOpenStorage, currentReactor, driveTrain, rodGrabber, fieldController);
+        lastLocation = closestOpenStorage;
         break;
+      }
 
-      case STORE_USED_ROD:
+      case STORE_USED_ROD: {
         // TODO: Use bluetooth to figure out closest supply that is open
-        currentTask = new AquireRodTask(3, 2, driveTrain, rodGrabber, fieldController);
+        int8 closestFullSupply = fieldController->getClosestFullSupply(currentReactor);
+        currentTask = new AquireRodTask(lastLocation, closestFullSupply, currentReactor, driveTrain, rodGrabber, fieldController);
+        lastLocation = closestFullSupply;
         break;
+      }
 
       case AQUIRE_NEW_ROD:
         currentTask = new DropOffAtReactorTask(currentReactor, driveTrain, rodGrabber, fieldController);
@@ -141,13 +150,24 @@ void loop() {
   if (currentTime > lastWriteTime + msPerFrame) {
     lcd.clear();
 
-    if (rodGrabber->isAtSetpoint()) {
+    /*if (rodGrabber->isAtSetpoint()) {
       lcd.print("At Setpoint!");
     } else {
       lcd.print("Moving to setpoint...");
-      lcd.setCursor(0, 1);
-      lcd.print(rodGrabber->readPotentiometer());
     }
+    lcd.setCursor(0, 1);
+    lcd.print(rodGrabber->readPotentiometer());*/
+
+    lcd.setCursor(0, 0);
+    lcd.print(fieldController->getSupplyAvailability(4));
+    lcd.print(fieldController->getSupplyAvailability(3));
+    lcd.print(fieldController->getSupplyAvailability(2));
+    lcd.print(fieldController->getSupplyAvailability(1));
+    lcd.setCursor(0, 1);
+    lcd.print(fieldController->getStorageAvailability(4));
+    lcd.print(fieldController->getStorageAvailability(3));
+    lcd.print(fieldController->getStorageAvailability(2));
+    lcd.print(fieldController->getStorageAvailability(1));
 
     lastWriteTime = currentTime;
   }

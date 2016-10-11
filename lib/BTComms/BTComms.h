@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #ifndef _BTReader
 #define _BTReader
 
@@ -15,13 +17,13 @@ class BTComms {
     BTComms();
     void setup();
     int getMessageLength();
-    unsigned char getMessageByte(unsigned index);
+    uint8_t getMessageByte(unsigned index);
     bool read();
     void writeMessage(unsigned char b1, unsigned char b2, unsigned char b3);
    private:
     enum BTstate {kLookingForStart, kReadingMessageLength, kReadMessage} BTstate;
     unsigned messageLength;
-    unsigned char message[20];
+    uint8_t message[20];
     unsigned messageIndex;
     unsigned char kMessageStart = 0x5f;
 };

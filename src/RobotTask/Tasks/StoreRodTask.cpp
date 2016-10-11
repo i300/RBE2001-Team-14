@@ -56,13 +56,18 @@ void StoreRodTask::update() {
       break;
     }
 
-    case SRR_TURN_ONTO_LINE:
+    case SRR_TURN_ONTO_LINE: {
+      int turnDirection = 1;
+      if (_currentReactor == 1) {
+        turnDirection = -1;
+      }
       if (currentTime < timeLastStateSwitch + 200) {
         _driveTrain->arcadeDrive(0.225, 0);
       } else if (currentTime < timeLastStateSwitch + 600) {
-        _driveTrain->tankDrive(-_driveTrain->MAX_LINEFOLLOWING_SPEED, _driveTrain->MAX_LINEFOLLOWING_SPEED);
+        _driveTrain->tankDrive(-_driveTrain->MAX_LINEFOLLOWING_SPEED * turnDirection,
+                               _driveTrain->MAX_LINEFOLLOWING_SPEED * turnDirection);
       } else {
-        if (_driveTrain->turnOntoLine(-0.2)) {
+        if (_driveTrain->turnOntoLine(-0.2 * turnDirection)) {
           _driveTrain->stop();
           timeLastStateSwitch = currentTime;
           state = SRR_ALIGN;
@@ -70,6 +75,7 @@ void StoreRodTask::update() {
       }
 
       break;
+    }
 
     case SRR_ALIGN:
       if (currentTime < timeLastStateSwitch + 500) {

@@ -27,13 +27,13 @@ private:
   const int GRABBER_OPEN_VALUE = 0;
   const int GRABBER_CLOSED_VALUE = 180;
 
-  //
-  const double SETPOINT_TOLERANCE = 0.05;
+  // Tolerance for IsAtSetpoint
+  const double SETPOINT_TOLERANCE = 0.01;
 
   //Variables for the PID loop
   double setpoint = 0; //desired position
   double kP = 5.0;
-  double kP_down = 1.0;
+  double kP_down = 2;
 
 public:
 
