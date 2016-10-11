@@ -12,6 +12,8 @@ AquireRodTask::AquireRodTask(int8 currentLocation, int8 rodLocation, int8 curren
   _fieldController = controller;
   _currentReactor = currentReactor;
 
+  _fieldController->status = FieldController::RadiationStatus::kHighRadiation;
+
   _driveTrain->resetLineCount();
 
   _initialLocation = currentLocation;

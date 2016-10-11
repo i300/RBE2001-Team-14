@@ -75,6 +75,7 @@ void DropOffAtReactorTask::update() {
           }
         }
       } else {
+        _driveTrain->tankDrive(0.1, 0.1);
         timeLastStateSwitch = currentTime;
       }
       break;

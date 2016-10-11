@@ -28,16 +28,20 @@ private:
   const int GRABBER_CLOSED_VALUE = 180;
 
   // Tolerance for IsAtSetpoint
-  const double SETPOINT_TOLERANCE = 0.01;
+  const double SETPOINT_TOLERANCE = 0.03;
 
   //Variables for the PID loop
   double setpoint = 0; //desired position
   double kP = 5.0;
-  double kP_down = 2;
+
+  double down_limit = 0.33;
+  double up_limit = 1;
 
 public:
 
   RodGrabber(int8 PIN_MOTOR, int8 PIN_GRABBER, int8 PIN_POTENTIOMETER);
+
+  void stop();
 
   void moveUp();
   void moveDown();

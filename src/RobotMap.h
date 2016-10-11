@@ -5,6 +5,9 @@
 
 #define DEBUG 1
 
+/* GLOBAL */
+static const uint8 ROBOT_ID = 21;
+
 /* ROD GRABBER */
 static const int8 PIN_SENSOR_POT = A11;
 

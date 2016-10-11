@@ -22,6 +22,13 @@ double RodGrabber::readPotentiometer() {
   return (double)analogRead(_PIN_POTENTIOMETER) / 1023.0;
 }
 
+/* stop -
+ * Forces the motor to stop moving
+ */
+void RodGrabber::stop() {
+  motor->write(0);
+}
+
 /* moveUp -
  * Sets the motor setpoint to up
  */
@@ -57,9 +64,9 @@ void RodGrabber::update() {
   double error = setpoint - readPotentiometer();
 
   if (error > 0) {
-    motor->write(error * kP);
+    motor->write(min(error * kP, up_limit));
   } else {
-    motor->write(error * kP_down);
+    motor->write(max(error * kP, -down_limit));
   }
 }
 

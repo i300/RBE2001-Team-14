@@ -15,9 +15,9 @@ struct Message {
 class FieldController {
 public:
   typedef enum {
-    kHighRadiation,
-    kLowRadiation,
-    kNoRadiation
+    kHighRadiation = 0xFF,
+    kLowRadiation = 0x2C,
+    kNoRadiation = 1
   } RadiationStatus;
 
   typedef enum {
@@ -31,7 +31,7 @@ public:
   	kHeartbeat              // 7
   } MessageType;
 
-  FieldController();
+  FieldController(uint8 RobotID);
   void setup();
   void update();
 
@@ -45,13 +45,20 @@ public:
   int8 getClosestOpenStorage(int8 currentReactor);
   int8 getClosestFullSupply(int8 currentReactor);
 
+  RadiationStatus status;
+
+  // for testing
+  unsigned long lastRadiationAlertTime = 0;
+
 private:
   byte storageAvailability;
   byte supplyAvailability;
   RadiationStatus radiationStatus;
   bool8 stopped;
+  uint8 _robotID;
 
   unsigned long heartbeatTimer;
+  unsigned long radiationStatusTimer;
 
   const int TYPE_INDEX = 0x00;
   const int SOURCE_INDEX = 0x01;

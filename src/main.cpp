@@ -38,7 +38,7 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Starting...");
 
-  fieldController = new FieldController();
+  fieldController = new FieldController(ROBOT_ID);
   fieldController->setup();
 
   lcd.begin(16, 2); // Begin LCD
@@ -83,6 +83,8 @@ void loop() {
 
   // Stop all actions if robot is stopped
   if (fieldController->getStopped()) {
+    driveTrain->stop();
+    rodGrabber->stop();
     return;
   }
 
@@ -158,16 +160,9 @@ void loop() {
     lcd.setCursor(0, 1);
     lcd.print(rodGrabber->readPotentiometer());*/
 
-    lcd.setCursor(0, 0);
-    lcd.print(fieldController->getSupplyAvailability(4));
-    lcd.print(fieldController->getSupplyAvailability(3));
-    lcd.print(fieldController->getSupplyAvailability(2));
-    lcd.print(fieldController->getSupplyAvailability(1));
+    lcd.print("Last sent RadAlert: ");
     lcd.setCursor(0, 1);
-    lcd.print(fieldController->getStorageAvailability(4));
-    lcd.print(fieldController->getStorageAvailability(3));
-    lcd.print(fieldController->getStorageAvailability(2));
-    lcd.print(fieldController->getStorageAvailability(1));
+    lcd.print(fieldController->lastRadiationAlertTime);
 
     lastWriteTime = currentTime;
   }

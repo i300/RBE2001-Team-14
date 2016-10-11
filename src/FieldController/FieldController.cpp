@@ -5,11 +5,14 @@ BTComms field;
 /**
  * Initializer
  */
-FieldController::FieldController() {
+FieldController::FieldController(uint8 robotID) {
   storageAvailability = 0;
   supplyAvailability = 0;
   radiationStatus = kNoRadiation;
   heartbeatTimer = millis() + 1000;
+  radiationStatusTimer = millis() + 1500;
+  _robotID = robotID;
+  status = kNoRadiation;
   stopped = false;
 }
 
@@ -24,10 +27,33 @@ void FieldController::setup() {
  * Read all messages recieved and update the state of the field
  */
 void FieldController::update() {
+  unsigned long currentTime = millis();
+
+  // Send a heartbeat every second.
+  // Send a radiation alert 500 ms after every heartbeat
+
   // Send heartbeat
-  if (millis() > heartbeatTimer) {
-    heartbeatTimer = millis() + 1000;
+  if (currentTime > heartbeatTimer) {
+    heartbeatTimer = currentTime + 1000;
+    radiationStatusTimer = currentTime + 500;
     sendHeartbeat();
+  }
+
+  // Send radiation status
+  if (currentTime > radiationStatusTimer) {
+    // Reset radiationStatusTimer to 10 seconds in the future. This is so
+    // the robot doesnt spam the field with messages. The actual
+    // radiationStatusTimer will be after sending a heartbeat
+    radiationStatusTimer = currentTime + 10000;
+
+    lastRadiationAlertTime = currentTime;
+
+    // Send status
+    if (status == kHighRadiation) {
+      field.writeMessage(kRadiationAlert, _robotID, kHighRadiation);
+    } else if (status == kLowRadiation) {
+      field.writeMessage(kRadiationAlert, _robotID, kLowRadiation);
+    }
   }
 
   // Read incoming messages
@@ -39,6 +65,9 @@ void FieldController::update() {
 
     // Ignore messages with reserved types
     if (message.type <= kReserved && message.type >= 0x08) break;
+
+    // Ignore messages for other robots
+    if (message.destination != _robotID && message.destination != 0) break;
 
     switch (message.type) {
       case kStorageAvailability:
@@ -74,7 +103,7 @@ void FieldController::update() {
  * Send heartbeat message to field
  */
 void FieldController::sendHeartbeat() {
-	field.writeMessage(kHeartbeat, 0x0a, 0x00);
+	field.writeMessage(kHeartbeat, _robotID, 0x00);
 }
 
 /** DEBUG
@@ -104,7 +133,7 @@ void FieldController::printStatus() {
  * @returns 0 = No Rod Present, 1 = Rod Present
  */
 bool8 FieldController::getStorageAvailability(int8 tube) {
-  return getAvailability(storageAvailability, tube - 1);
+  return getAvailability(storageAvailability, 4 - tube);
 }
 
 /**
@@ -112,7 +141,7 @@ bool8 FieldController::getStorageAvailability(int8 tube) {
  * @returns 0 = No Rod Present, 1 = Rod Present
  */
 bool8 FieldController::getSupplyAvailability(int8 tube) {
-  return getAvailability(supplyAvailability, tube - 1);
+  return getAvailability(supplyAvailability, 4 - tube);
 }
 
 /**
@@ -156,13 +185,13 @@ int8 FieldController::getClosestAvailability(byte container, int8 currentReactor
   }
   if (currentReactor == 0) {
     for (int8 i=1; i<=4; i++) {
-      if (getAvailability(container, i-1) == desiredValue) {
+      if (getAvailability(container, 4 - i) == desiredValue) {
         return i;
       }
     }
   } else if (currentReactor == 1) {
     for (int8 i=4; i>=1; i--) {
-      if (getAvailability(container, i-1) == desiredValue) {
+      if (getAvailability(container, 4 - i) == desiredValue) {
         return i;
       }
     }

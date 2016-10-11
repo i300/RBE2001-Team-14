@@ -6,6 +6,7 @@ PickUpFromReactorTask::PickUpFromReactorTask(DriveTrain *driveTrain, RodGrabber 
   _rodGrabber = rodGrabber;
 
   _driveTrain->resetLineCount();
+  _fieldController->status = FieldController::RadiationStatus::kLowRadiation;
 
   state = PFR_DRIVE_FORWARD;
 }
