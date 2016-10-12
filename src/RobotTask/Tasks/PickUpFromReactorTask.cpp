@@ -6,7 +6,6 @@ PickUpFromReactorTask::PickUpFromReactorTask(DriveTrain *driveTrain, RodGrabber 
   _rodGrabber = rodGrabber;
 
   _driveTrain->resetLineCount();
-  _fieldController->radiationStatus = FieldController::RadiationStatus::kLowRadiation;
 
   state = PFR_DRIVE_FORWARD;
 }
@@ -46,6 +45,7 @@ void PickUpFromReactorTask::update() {
           _rodGrabber->moveUp();
           if (_rodGrabber->isAtSetpoint()) {
             state = PFR_TURN_AROUND;
+            _fieldController->radiationStatus = FieldController::RadiationStatus::kLowRadiation;
             timeLastStateSwitch = currentTime;
           }
         }

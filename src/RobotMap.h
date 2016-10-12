@@ -3,8 +3,6 @@
 #ifndef ROBOTMAP_H
 #define ROBOTMAP_H
 
-#define DEBUG 1
-
 /* GLOBAL */
 static const uint8 ROBOT_ID = 21;
 

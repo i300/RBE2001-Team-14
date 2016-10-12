@@ -100,6 +100,7 @@ void StoreRodTask::update() {
       _rodGrabber->release();
       if (currentTime > timeLastStateSwitch + 250) {
         state = SRR_TURN_AROUND;
+        _fieldController->radiationStatus = FieldController::RadiationStatus::kNoRadiation;
         timeLastStateSwitch = currentTime;
       }
       break;

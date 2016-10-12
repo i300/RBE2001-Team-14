@@ -90,6 +90,7 @@ void DropOffAtReactorTask::update() {
         _driveTrain->tankDrive(-0.2, 0.2);
       } else {
         if (_driveTrain->turnOntoLine(-0.2)) {
+          _fieldController->radiationStatus = FieldController::RadiationStatus::kNoRadiation;
           state = DR_FINISHED;
           timeLastStateSwitch = currentTime;
         }

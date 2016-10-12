@@ -12,8 +12,6 @@ AquireRodTask::AquireRodTask(int8 currentLocation, int8 rodLocation, int8 curren
   _fieldController = controller;
   _currentReactor = currentReactor;
 
-  _fieldController->radiationStatus = FieldController::RadiationStatus::kHighRadiation;
-
   _driveTrain->resetLineCount();
 
   _initialLocation = currentLocation;
@@ -135,6 +133,7 @@ void AquireRodTask::update() {
       } else if (currentTime < timeLastStateSwitch + 1000) {
         _rodGrabber->grab();
       } else if (currentTime < timeLastStateSwitch + 1500) {
+        _fieldController->radiationStatus = FieldController::RadiationStatus::kHighRadiation;
         state = AR_TURN_AROUND;
         timeLastStateSwitch = currentTime;
       }
