@@ -61,9 +61,9 @@ void StoreRodTask::update() {
       if (_currentReactor == 1) {
         turnDirection = -1;
       }
-      if (currentTime < timeLastStateSwitch + 200) {
+      if (currentTime < timeLastStateSwitch + 625) {
         _driveTrain->arcadeDrive(0.225, 0);
-      } else if (currentTime < timeLastStateSwitch + 600) {
+      } else if (currentTime < timeLastStateSwitch + 1025) {
         _driveTrain->tankDrive(-_driveTrain->MAX_LINEFOLLOWING_SPEED * turnDirection,
                                _driveTrain->MAX_LINEFOLLOWING_SPEED * turnDirection);
       } else {

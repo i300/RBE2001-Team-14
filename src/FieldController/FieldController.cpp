@@ -12,7 +12,8 @@ FieldController::FieldController(uint8 robotID) {
   heartbeatTimer = millis() + 1000;
   radiationStatusTimer = millis() + 1500;
   _robotID = robotID;
-  status = kNoRadiation;
+  _hasRecievedMessage = false;
+  radiationStatus = kNoRadiation;
   stopped = false;
 }
 
@@ -49,15 +50,17 @@ void FieldController::update() {
     lastRadiationAlertTime = currentTime;
 
     // Send status
-    if (status == kHighRadiation) {
-      field.writeMessage(kRadiationAlert, _robotID, kHighRadiation);
-    } else if (status == kLowRadiation) {
-      field.writeMessage(kRadiationAlert, _robotID, kLowRadiation);
+    if (radiationStatus == kHighRadiation) {
+      field.writeMessage(kRadiationAlert, _robotID, 0, kHighRadiation);
+    } else if (radiationStatus == kLowRadiation) {
+      field.writeMessage(kRadiationAlert, _robotID, 0, kLowRadiation);
     }
   }
 
   // Read incoming messages
   while (field.read()) {
+    _hasRecievedMessage = true;
+
     Message message;
     message.type = field.getMessageByte(TYPE_INDEX);
     message.source = field.getMessageByte(SOURCE_INDEX);
@@ -153,9 +156,9 @@ bool8 FieldController::getAvailability(byte container, int8 tubeIndex) {
    * Take the container byte and AND the bitmask based on the tubeIndex, then
    * shift over the resultant to be a single bit.
    *
-   * EXAMPLE: Get status of tube 4
-   * 1101000 & (00010000) = 0001000
-   * 0001000 >> 3 = 1
+   * EXAMPLE: Get status of tube 4 (index 3)
+   * 00001101 & (00001000) = 00001000
+   * 00001000 >> 3 = 1
    * Therefore a rod is present in the tube
    */
   return (container & (1 << (tubeIndex))) >> (tubeIndex);
@@ -166,6 +169,10 @@ bool8 FieldController::getAvailability(byte container, int8 tubeIndex) {
  */
 bool8 FieldController::getStopped() {
   return stopped;
+}
+
+bool8 FieldController::hasRecievedMessage() {
+  return _hasRecievedMessage;
 }
 
 int8 FieldController::getClosestOpenStorage(int8 currentReactor) {

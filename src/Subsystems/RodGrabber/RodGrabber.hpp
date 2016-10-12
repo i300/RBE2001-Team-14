@@ -20,21 +20,22 @@ private:
   int8 _PIN_POTENTIOMETER;
 
   //Variables for the position of the Fourbar mechanism
-  const double UP_SETPOINT = 0.42;
-  const double DOWN_SETPOINT = 0.0;
+  const double UP_SETPOINT = 0.77;
+  const double MID_SETPOINT = 0.61;
+  const double DOWN_SETPOINT = 0.27;
 
   //Variables for the position of the grabber open/closed
   const int GRABBER_OPEN_VALUE = 0;
   const int GRABBER_CLOSED_VALUE = 180;
 
   // Tolerance for IsAtSetpoint
-  const double SETPOINT_TOLERANCE = 0.03;
+  const double SETPOINT_TOLERANCE = 0.02;
 
   //Variables for the PID loop
   double setpoint = 0; //desired position
-  double kP = 5.0;
+  double kP = 7.5;
 
-  double down_limit = 0.33;
+  double down_limit = 0.2;
   double up_limit = 1;
 
 public:

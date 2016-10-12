@@ -12,7 +12,7 @@ AquireRodTask::AquireRodTask(int8 currentLocation, int8 rodLocation, int8 curren
   _fieldController = controller;
   _currentReactor = currentReactor;
 
-  _fieldController->status = FieldController::RadiationStatus::kHighRadiation;
+  _fieldController->radiationStatus = FieldController::RadiationStatus::kHighRadiation;
 
   _driveTrain->resetLineCount();
 
@@ -92,9 +92,9 @@ void AquireRodTask::update() {
         turnDirection = 1;
       }
 
-      if (currentTime < timeLastStateSwitch + 200) {
+      if (currentTime < timeLastStateSwitch + 625) {
         _driveTrain->arcadeDrive(0.225, 0);
-      } else if (currentTime < timeLastStateSwitch + 600) {
+      } else if (currentTime < timeLastStateSwitch + 1025) {
         _driveTrain->tankDrive(-_driveTrain->MAX_LINEFOLLOWING_SPEED * turnDirection,
                                _driveTrain->MAX_LINEFOLLOWING_SPEED * turnDirection);
       } else {
@@ -119,7 +119,7 @@ void AquireRodTask::update() {
 
 
     case AR_DRIVE_DIRECT_TO_SUPPLY:
-      _driveTrain->followLine(_driveTrain->MAX_LINEFOLLOWING_SPEED);
+      _driveTrain->followLine(0.225);
       if (_driveTrain->isAlignmentSwitchPressed()) {
         state = AR_PICKUP_ROD;
         timeLastStateSwitch = currentTime;
@@ -127,8 +127,14 @@ void AquireRodTask::update() {
       break;
 
     case AR_PICKUP_ROD:
-      _rodGrabber->grab();
-      if (currentTime > timeLastStateSwitch + 500) {
+      /* Wait 1/2 a second to grab the rod, then switch state */
+
+      _driveTrain->tankDrive(0.1, 0.1);
+      if (currentTime < timeLastStateSwitch + 500) {
+
+      } else if (currentTime < timeLastStateSwitch + 1000) {
+        _rodGrabber->grab();
+      } else if (currentTime < timeLastStateSwitch + 1500) {
         state = AR_TURN_AROUND;
         timeLastStateSwitch = currentTime;
       }

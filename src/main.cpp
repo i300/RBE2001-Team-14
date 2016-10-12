@@ -66,7 +66,14 @@ void setup() {
   rodGrabber = new RodGrabber(PIN_MOTOR_GRABBER, PIN_SERVO_GRABBER, PIN_SENSOR_POT);
 
   rodGrabber->moveUp();
-  rodGrabber->grab();
+  rodGrabber->release();
+
+  lcd.print("Waiting 4 field...");
+
+  // Wait to start task loop until the field is sending messages
+  while (!fieldController->hasRecievedMessage()) {
+    fieldController->update();
+  }
 
   currentTask = new CalibrationTask(driveTrain, rodGrabber, fieldController);
 }
@@ -152,17 +159,23 @@ void loop() {
   if (currentTime > lastWriteTime + msPerFrame) {
     lcd.clear();
 
-    /*if (rodGrabber->isAtSetpoint()) {
-      lcd.print("At Setpoint!");
-    } else {
-      lcd.print("Moving to setpoint...");
-    }
-    lcd.setCursor(0, 1);
-    lcd.print(rodGrabber->readPotentiometer());*/
-
-    lcd.print("Last sent RadAlert: ");
-    lcd.setCursor(0, 1);
-    lcd.print(fieldController->lastRadiationAlertTime);
+    #ifndef DEBUG
+      if (fieldController->radiationStatus == FieldController::RadiationStatus::kLowRadiation) {
+        lcd.write("Low Radiation!");
+      } else if (fieldController->radiationStatus == FieldController::RadiationStatus::kHighRadiation) {
+        lcd.write("HIGH RADIATION!!");
+      } else {
+        lcd.write("No Radiation.");
+      }
+    #else
+      if (rodGrabber->isAtSetpoint()) {
+        lcd.print("At Setpoint!");
+      } else {
+        lcd.print("Moving to setpoint...");
+      }
+      lcd.setCursor(0, 1);
+      lcd.print(rodGrabber->readPotentiometer());
+    #endif
 
     lastWriteTime = currentTime;
   }

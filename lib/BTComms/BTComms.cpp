@@ -20,15 +20,28 @@ void BTComms::setup() {
 }
 
 /**
- * Send a message to the RCS that has 3 values (source, dest, data)
+ * Send a message to the RCS that has 3 values
  */
-void BTComms::writeMessage(unsigned char b1, unsigned char b2, unsigned char b3) {
+void BTComms::writeMessage(unsigned char type, unsigned char source, unsigned char dest) {
   Serial3.write(kMessageStart);
   Serial3.write(5);
-  Serial3.write(b1);
-  Serial3.write(b2);
-  Serial3.write(b3);
-  Serial3.write(0xff - (b1 + b2 + b3 + 5));
+  Serial3.write(type);
+  Serial3.write(source);
+  Serial3.write(dest);
+  Serial3.write(0xff - (type + source + dest + 5));
+}
+
+/**
+ * Send a message to the RCS that has 4 values
+ */
+void BTComms::writeMessage(unsigned char type, unsigned char source, unsigned char dest, unsigned char data) {
+  Serial3.write(kMessageStart);
+  Serial3.write(6);
+  Serial3.write(type);
+  Serial3.write(source);
+  Serial3.write(dest);
+	Serial3.write(data);
+  Serial3.write(0xff - (type + source + dest + data + 6));
 }
 
 /**

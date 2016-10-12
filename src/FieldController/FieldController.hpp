@@ -40,12 +40,13 @@ public:
   void printStatus();
 
   bool8 getStopped();
+  bool8 hasRecievedMessage();
   bool8 getStorageAvailability(int8 tube);
   bool8 getSupplyAvailability(int8 tube);
   int8 getClosestOpenStorage(int8 currentReactor);
   int8 getClosestFullSupply(int8 currentReactor);
 
-  RadiationStatus status;
+  RadiationStatus radiationStatus;
 
   // for testing
   unsigned long lastRadiationAlertTime = 0;
@@ -53,9 +54,9 @@ public:
 private:
   byte storageAvailability;
   byte supplyAvailability;
-  RadiationStatus radiationStatus;
   bool8 stopped;
   uint8 _robotID;
+  bool8 _hasRecievedMessage;
 
   unsigned long heartbeatTimer;
   unsigned long radiationStatusTimer;

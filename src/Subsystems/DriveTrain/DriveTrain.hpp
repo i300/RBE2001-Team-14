@@ -11,7 +11,7 @@
  * leftMotor
  * rightMotor
  * lineSensors
- * 
+ *
  * See comments below for more information
  */
 
@@ -63,9 +63,9 @@ public:
   void stop();
 
   // Line following constants
-  double kP = 0.5;
-  double kI = 0;
-  double kD = 0.4;
+  double kP = 0.5; // 0.5
+  double kI = 0.0001;
+  double kD = 0.4; // 0.4
 
   // Line aligning constants
   double kP_align = 0.5;
