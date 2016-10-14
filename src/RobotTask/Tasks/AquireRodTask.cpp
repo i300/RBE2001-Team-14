@@ -133,7 +133,7 @@ void AquireRodTask::update() {
 
     case AR_DRIVE_DIRECT_TO_SUPPLY:
       /* Drive forward until alignment switch is pressed */
-      _driveTrain->followLine(0.225);
+      _driveTrain->followLine(0.155);
       if (_driveTrain->isAlignmentSwitchPressed()) {
         state = AR_PICKUP_ROD;
         timeLastStateSwitch = currentTime;
