@@ -34,7 +34,7 @@ void StoreRodTask::update() {
 
   switch (state) {
     case SRR_DRIVE_TO_LINE: {
-
+      /* Drive until we're at the desired storage line */
       _rodGrabber->moveUp();
 
       _driveTrain->followLine(_driveTrain->MAX_LINEFOLLOWING_SPEED);
@@ -57,10 +57,16 @@ void StoreRodTask::update() {
     }
 
     case SRR_TURN_ONTO_LINE: {
+      /* Calculate which direction we need to turn based on the current reactor */
       int turnDirection = 1;
       if (_currentReactor == 1) {
         turnDirection = -1;
       }
+
+      /* Drive forward so the turn center is on the middle of the line, then
+       * turn a fixed distance (to move the line sensor off the line). Then turn
+       * until we see the line we're turning onto and stop.
+       */
       if (currentTime < timeLastStateSwitch + 625) {
         _driveTrain->arcadeDrive(0.225, 0);
       } else if (currentTime < timeLastStateSwitch + 1025) {
@@ -78,6 +84,7 @@ void StoreRodTask::update() {
     }
 
     case SRR_ALIGN:
+      /* Turn to align with the line without driving forward. Corrects for overshoot */
       if (currentTime < timeLastStateSwitch + 500) {
         _driveTrain->alignWithLine();
       } else {
@@ -88,6 +95,7 @@ void StoreRodTask::update() {
 
 
     case SRR_DRIVE_TO_STORAGE:
+      /* Drive forward until alignment switch is pressed */
       _driveTrain->followLine(0.225);
       if (_driveTrain->isAlignmentSwitchPressed()) {
         _driveTrain->stop();
@@ -97,6 +105,7 @@ void StoreRodTask::update() {
       break;
 
     case SRR_INSERT_ROD:
+      /* Release the grabber and wait a moment */
       _rodGrabber->release();
       if (currentTime > timeLastStateSwitch + 250) {
         state = SRR_TURN_AROUND;
@@ -106,6 +115,9 @@ void StoreRodTask::update() {
       break;
 
     case SRR_TURN_AROUND:
+      /* Back up for 1/2 a second, turn manually for about 1.5 seconds,
+       * then turn onto the line and move to the next state.
+       */
       if (currentTime < timeLastStateSwitch + 500) { // Back up
         _driveTrain->arcadeDrive(-_driveTrain->MAX_LINEFOLLOWING_SPEED, 0);
       } else if (currentTime < timeLastStateSwitch + 2125) { // Turn for time

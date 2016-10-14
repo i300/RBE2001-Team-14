@@ -54,7 +54,6 @@ public:
   double alignWithLine();
   double followLine(float speed);
   bool8 turnOntoLine(float speed);
-  bool8 turnWideOntoLine(float speed, int direction);
   int updateLineCount();
   void resetLineCount();
 

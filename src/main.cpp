@@ -56,6 +56,7 @@ void setup() {
 
   lcd.clear();
 
+  // Initialize Subsystems
   uint8 sensorPins[] = { PIN_SENSOR_LINE1, PIN_SENSOR_LINE2, PIN_SENSOR_LINE3,
                          PIN_SENSOR_LINE4, PIN_SENSOR_LINE5, PIN_SENSOR_LINE6,
                          PIN_SENSOR_LINE7, PIN_SENSOR_LINE8 };
@@ -75,6 +76,7 @@ void setup() {
     fieldController->update();
   }
 
+  // Start task state-machine at the correct task
   currentTask = new CalibrationTask(driveTrain, rodGrabber, fieldController);
 }
 
@@ -115,11 +117,9 @@ void loop() {
 
       case CALIBRATION:
         currentTask = new PickUpFromReactorTask(driveTrain, rodGrabber, fieldController);
-        //currentTask = new AquireRodTask(3, 2, driveTrain, rodGrabber, fieldController);
         break;
 
       case PICKUP_FROM_REACTOR: {
-        // TODO: Use bluetooth to figure out closest storage that is open
         int8 closestOpenStorage = fieldController->getClosestOpenStorage(currentReactor);
         currentTask = new StoreRodTask(closestOpenStorage, currentReactor, driveTrain, rodGrabber, fieldController);
         lastLocation = closestOpenStorage;
@@ -127,7 +127,6 @@ void loop() {
       }
 
       case STORE_USED_ROD: {
-        // TODO: Use bluetooth to figure out closest supply that is open
         int8 closestFullSupply = fieldController->getClosestFullSupply(currentReactor);
         currentTask = new AquireRodTask(lastLocation, closestFullSupply, currentReactor, driveTrain, rodGrabber, fieldController);
         lastLocation = closestFullSupply;
@@ -139,6 +138,8 @@ void loop() {
         break;
 
       case DROP_OFF_AT_REACTOR:
+        // If we've just finished reactor 0, set reactor to 1 and restart the loop.
+        // Otherwise, we're done!
         if (currentReactor == 0) {
           currentReactor = 1;
           currentTask = new PickUpFromReactorTask(driveTrain, rodGrabber, fieldController);
@@ -150,7 +151,6 @@ void loop() {
       default:
         //currentTask = new RobotTask();
         break;
-
     }
   }
 

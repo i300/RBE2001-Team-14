@@ -3,10 +3,6 @@
 #include "../../Subsystems/RodGrabber/RodGrabber.hpp"
 #include "../../FieldController/FieldController.hpp"
 #include "../RobotTask.hpp"
-/*
- *AquireRodTask
- *Class to store the task of Aquiring the rod
- */
 
 #ifndef AQUIRE_ROD_TASK_H
 #define AQUIRE_ROD_TASK_H
@@ -43,6 +39,8 @@ protected:
 
 public:
   AquireRodTask(int8 currentLocation, int8 rodLocation, int8 currentReactor, DriveTrain *driveTrain, RodGrabber *rodGrabber, FieldController *controller);
+
+  int getState();
 
   virtual bool8 isFinished();
   virtual void update();

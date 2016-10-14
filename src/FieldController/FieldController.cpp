@@ -171,18 +171,31 @@ bool8 FieldController::getStopped() {
   return stopped;
 }
 
+/*
+ * @returns True if we've started recieving messages
+ */
 bool8 FieldController::hasRecievedMessage() {
   return _hasRecievedMessage;
 }
 
+/*
+ * Finds the closest open storage container
+ */
 int8 FieldController::getClosestOpenStorage(int8 currentReactor) {
   return getClosestAvailability(storageAvailability, currentReactor);
 }
 
+/*
+ * Finds the closest full supply container
+ */
 int8 FieldController::getClosestFullSupply(int8 currentReactor) {
   return getClosestAvailability(supplyAvailability, currentReactor);
 }
 
+/*
+ * Finds the cloest available slot in a given container. Tries to find the closest
+ * open container relative to the current reactor.
+ */
 int8 FieldController::getClosestAvailability(byte container, int8 currentReactor) {
   int8 desiredValue = 0;
   if (container == storageAvailability) {

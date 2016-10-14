@@ -169,7 +169,6 @@ double DriveTrain::alignWithLine() {
   return rotation;
 }
 
-
 /* turnOntoLine - bool8
  * Turns the robot towards a new line
  *
@@ -199,32 +198,6 @@ bool8 DriveTrain::turnOntoLine(float speed) {
   }
 }
 
-bool8 DriveTrain::turnWideOntoLine(float speed, int direction) {
-  speed = constrain(speed, -1, 1);
-  direction = constrain(direction, -1, 1);
-
-  unsigned int sensorValues[_lineSensor->getNumSensors()];
-  _lineSensor->readCalibrated(sensorValues);
-  unsigned int middleSensorValue = sensorValues[4];
-
-  int error = 1000 - middleSensorValue;
-
-  Serial.println("Error: " + String(error));
-
-  if (abs(error) < TURN_ONTO_LINE_TOLERANCE) {
-    stop();
-    return true;
-  } else {
-    speed = speed * kP_turn * (error / 1000.0);
-
-    if (direction == 1) {
-      tankDrive(-speed, 0);
-    } else {
-      tankDrive(0, -speed);
-    }
-    return false;
-  }
-}
 /* updateLineCount - int
  * keeps track of how many horizontal lines the robot has traveled
  *

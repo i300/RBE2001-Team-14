@@ -3,10 +3,8 @@
 
 /*
  * RobotTask
- * Class to store the current "task" of the RobotTask
+ * Base class that defines the robot's current "task"
  *
- * A task has a type and data associated with it. Data is defined differently
- * for every type. See comment below for more information on data.
  */
 
 #ifndef ROBOTTASK_H
